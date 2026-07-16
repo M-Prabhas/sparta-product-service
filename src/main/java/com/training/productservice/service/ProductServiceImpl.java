@@ -1,10 +1,6 @@
 package com.training.productservice.service;
 
-import com.training.productservice.dto.AvailabilityResponseDto;
-import com.training.productservice.dto.PriceUpdateRequestDto;
-import com.training.productservice.dto.ProductRequestDto;
-import com.training.productservice.dto.ProductResponseDto;
-import com.training.productservice.dto.StockUpdateRequestDto;
+import com.training.productservice.dto.*;
 import com.training.productservice.entity.Product;
 import com.training.productservice.exception.DuplicateProductException;
 import com.training.productservice.exception.InsufficientStockException;
@@ -55,35 +51,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public ProductResponseDto updateProduct(UUID id, ProductRequestDto dto) {
-        Product product = findProductOrThrow(id);
-        productMapper.updateEntity(product, dto);
-        return productMapper.toResponseDto(productRepository.save(product));
-    }
-
-    @Override
-    @Transactional
     public ProductResponseDto updatePrice(UUID id, PriceUpdateRequestDto dto) {
         Product product = findProductOrThrow(id);
         product.setPrice(dto.getPrice());
-        return productMapper.toResponseDto(productRepository.save(product));
-    }
-
-    @Override
-    @Transactional
-    public ProductResponseDto updateStock(UUID id, StockUpdateRequestDto dto) {
-        Product product = findProductOrThrow(id);
-        int current = product.getStockQuantity();
-        int updated = switch (dto.getOperation()) {
-            case INCREASE -> current + dto.getQuantity();
-            case DECREASE -> current - dto.getQuantity();
-            case SET -> dto.getQuantity();
-        };
-        if (updated < 0) {
-            throw new InsufficientStockException(
-                    "Cannot decrease stock of product " + id + " by " + dto.getQuantity() + "; current stock is " + current);
-        }
-        product.setStockQuantity(updated);
         return productMapper.toResponseDto(productRepository.save(product));
     }
 
@@ -126,5 +96,32 @@ public class ProductServiceImpl implements ProductService {
     private Product findProductOrThrow(UUID id) {
         return productRepository.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException("Product with id " + id + " not found"));
+    }
+
+    @Override
+    @Transactional
+    public ProductResponseDto updateProductInfo(UUID id, ProductRequestDto product) {
+       Product savedProduct = productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException("Product with id " + id + " not found"));
+
+       productMapper.updateEntity(savedProduct, product);
+
+       return productMapper.toResponseDto(productRepository.save(savedProduct));
+    }
+
+    @Override
+    public ProductResponseDto adjustStock(UUID id, StockUpdateRequestDto stockUpdateRequestDto) {
+        Product product = findProductOrThrow(id);
+        int current = product.getStockQuantity();
+        int updated = switch (stockUpdateRequestDto.getOperation()) {
+            case INCREASE -> current + stockUpdateRequestDto.getQuantity();
+            case DECREASE -> current - stockUpdateRequestDto.getQuantity();
+            case SET -> stockUpdateRequestDto.getQuantity();
+        };
+        if (updated < 0) {
+            throw new InsufficientStockException(
+                    "Cannot decrease stock of product " + id + " by " + stockUpdateRequestDto.getQuantity() + "; current stock is " + current);
+        }
+        product.setStockQuantity(updated);
+        return productMapper.toResponseDto(productRepository.save(product));
     }
 }
