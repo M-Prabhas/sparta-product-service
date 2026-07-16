@@ -17,6 +17,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -65,16 +66,16 @@ public class ProductController {
         return ResponseEntity.created(location).body(created);
     }
 
-    @GetMapping("/{id}")
-    @Operation(summary = "Get a product by id")
-    public ResponseEntity<ProductResponseDto> getProductById(@Parameter(description = "Product id") @PathVariable UUID id) {
-        return ResponseEntity.ok(productService.getProductById(id));
-    }
-
     @GetMapping
     @Operation(summary = "List all active products")
     public ResponseEntity<List<ProductResponseDto>> getAllProducts() {
         return ResponseEntity.ok(productService.getAllProducts());
+    }
+
+    @GetMapping("/{id}")
+    @Operation(summary = "Get a product by id")
+    public ResponseEntity<ProductResponseDto> getProductById(@Parameter(description = "Product id") @PathVariable UUID id) {
+        return ResponseEntity.ok(productService.getProductById(id));
     }
 
     @PatchMapping("/{id}/price")
@@ -88,7 +89,7 @@ public class ProductController {
     @Operation(summary = "Check whether a product has sufficient stock for a requested quantity")
     public ResponseEntity<AvailabilityResponseDto> checkAvailability(@Parameter(description = "Product id") @PathVariable UUID id,
                                                                        @Parameter(description = "Requested quantity")
-                                                                       @RequestParam @Min(1) Integer quantity) {
+                                                                       @RequestParam @NotNull @Min(1) Integer quantity) {
         return ResponseEntity.ok(productService.checkAvailability(id, quantity));
     }
 
