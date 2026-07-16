@@ -31,8 +31,7 @@ public interface ProductService {
 
     void deleteProduct(UUID id);
 
-    //Code done by Chandrabose Pallikanti
-    public ProductResponseDto updateProductInfo(UUID id, ProductRequestDto product);
+    ProductResponseDto updateProductInfo(UUID id, ProductRequestDto product);
 
     ProductResponseDto adjustStock(UUID id, @Min(1) StockUpdateRequestDto stockUpdateRequestDto);
 }

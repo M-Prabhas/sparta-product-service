@@ -86,7 +86,6 @@ public class ProductController {
         return ResponseEntity.noContent().build();
     }
 
-    //Code done by Chandrabose Pallikanti
     @PutMapping("/update/{id}")
     public ResponseEntity<ProductResponseDto> updateProductInfo(@PathVariable UUID id, @Valid @RequestBody ProductRequestDto product){
         ProductResponseDto updatedProduct = productService.updateProductInfo(id,product);
