@@ -6,10 +6,14 @@ import com.training.productservice.dto.ProductRequestDto;
 import com.training.productservice.dto.ProductResponseDto;
 import com.training.productservice.dto.StockReductionRequestDto;
 import com.training.productservice.dto.StockUpdateRequestDto;
+import com.training.productservice.entity.Product;
 import com.training.productservice.service.ProductService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -32,7 +36,7 @@ import java.util.UUID;
 @RequestMapping("/api/v1/products")
 @RequiredArgsConstructor
 @Validated
-public class ProductController {
+public class  ProductController {
 
     private final ProductService productService;
 
@@ -66,15 +70,15 @@ public class ProductController {
         return ResponseEntity.ok(productService.updatePrice(id, dto));
     }
 
-    @PatchMapping("/{id}/stock")
-    public ResponseEntity<ProductResponseDto> updateStock(@PathVariable UUID id,
-                                                            @Valid @RequestBody StockUpdateRequestDto dto) {
-        return ResponseEntity.ok(productService.updateStock(id, dto));
-    }
+//    @PatchMapping("/{id}/stock")
+//    public ResponseEntity<ProductResponseDto> updateStock(@PathVariable UUID id,
+//                                                            @Valid @RequestBody StockUpdateRequestDto dto) {
+//        return ResponseEntity.ok(productService.updateStock(id, dto));
+//    }
 
     @GetMapping("/{id}/availability")
-    public ResponseEntity<AvailabilityResponseDto> checkAvailability(@PathVariable UUID id,
-                                                                       @RequestParam @Min(1) Integer quantity) {
+    public ResponseEntity<AvailabilityResponseDto> checkAvailability(@PathVariable @NotBlank UUID id,
+                                                                       @RequestParam @NotNull @Min(1) Integer quantity) {
         return ResponseEntity.ok(productService.checkAvailability(id, quantity));
     }
 
@@ -88,5 +92,23 @@ public class ProductController {
     public ResponseEntity<Void> deleteProduct(@PathVariable UUID id) {
         productService.deleteProduct(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<ProductResponseDto> updateProductInfo(@PathVariable UUID id, @Valid @RequestBody ProductRequestDto product){
+        ProductResponseDto updatedProduct = productService.updateProductInfo(id,product);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                             .header("update","resource updated successfully...")
+                             .body(updatedProduct);
+    }
+
+    @PatchMapping("/adjust/stock/{id}")
+    public ResponseEntity<ProductResponseDto> adjustStock(@PathVariable UUID id,@Valid @RequestBody @Min(1) StockUpdateRequestDto stockUpdateRequestDto) {
+        ProductResponseDto updatedStock = productService.adjustStock(id, stockUpdateRequestDto);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                             .header("stock update","stock value updated--> "+stockUpdateRequestDto.getOperation())
+                             .body(updatedStock);
     }
 }
