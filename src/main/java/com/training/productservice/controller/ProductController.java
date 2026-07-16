@@ -32,7 +32,7 @@ import java.util.UUID;
 @RequestMapping("/api/v1/products")
 @RequiredArgsConstructor
 @Validated
-public class ProductController {
+public class  ProductController {
 
     private final ProductService productService;
 
