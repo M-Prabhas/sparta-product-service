@@ -1,6 +1,11 @@
 package com.training.productservice.service;
 
-import com.training.productservice.dto.*;
+import com.training.productservice.dto.AvailabilityResponseDto;
+import com.training.productservice.dto.ProductAvailability;
+import com.training.productservice.dto.PriceUpdateRequestDto;
+import com.training.productservice.dto.ProductResponseDto;
+import com.training.productservice.dto.ProductRequestDto;
+import com.training.productservice.dto.StockUpdateRequestDto;
 import com.training.productservice.entity.Product;
 import com.training.productservice.exception.DuplicateProductException;
 import com.training.productservice.exception.InsufficientStockException;
@@ -13,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
