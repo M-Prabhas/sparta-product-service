@@ -15,8 +15,6 @@ public interface ProductService {
 
     ProductResponseDto createProduct(ProductRequestDto dto);
 
-    ProductResponseDto getProductById(UUID id);
-
     List<ProductResponseDto> getAllProducts();
 
     //ProductResponseDto updateProduct(UUID id, ProductRequestDto dto);

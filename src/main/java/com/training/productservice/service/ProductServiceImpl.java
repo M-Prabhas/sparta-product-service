@@ -40,11 +40,6 @@ public class ProductServiceImpl implements ProductService {
         return productMapper.toResponseDto(saved);
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public ProductResponseDto getProductById(UUID id) {
-        return productMapper.toResponseDto(findProductOrThrow(id));
-    }
 
     @Override
     @Transactional(readOnly = true)
@@ -52,6 +47,12 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.findByActiveTrue().stream()
                 .map(productMapper::toResponseDto)
                 .toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ProductResponseDto getProductById(UUID id) {
+        return productMapper.toResponseDto(findProductOrThrow(id));
     }
 
     @Override

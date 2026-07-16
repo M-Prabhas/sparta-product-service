@@ -48,14 +48,20 @@ public class  ProductController {
         return ResponseEntity.created(location).body(created);
     }
 
+    @GetMapping
+    public ResponseEntity<List<ProductResponseDto>> getAllProducts() {
+        return ResponseEntity.ok(productService.getAllProducts());
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<ProductResponseDto> getProductById(@PathVariable UUID id) {
         return ResponseEntity.ok(productService.getProductById(id));
     }
 
-    @GetMapping
-    public ResponseEntity<List<ProductResponseDto>> getAllProducts() {
-        return ResponseEntity.ok(productService.getAllProducts());
+    @PutMapping("/{id}")
+    public ResponseEntity<ProductResponseDto> updateProduct(@PathVariable UUID id,
+                                                              @Valid @RequestBody ProductRequestDto dto) {
+        return ResponseEntity.ok(productService.updateProduct(id, dto));
     }
 
     @PatchMapping("/{id}/price")
