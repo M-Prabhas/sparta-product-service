@@ -17,6 +17,6 @@ public class AvailabilityResponseDto {
 
     private UUID productId;
     private Integer requestedQuantity;
-    private Boolean available;
+    private ProductAvailability available;
     private Integer currentStock;
 }
