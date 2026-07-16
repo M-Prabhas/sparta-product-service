@@ -9,6 +9,8 @@ import com.training.productservice.dto.StockUpdateRequestDto;
 import com.training.productservice.service.ProductService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -73,8 +75,8 @@ public class ProductController {
     }
 
     @GetMapping("/{id}/availability")
-    public ResponseEntity<AvailabilityResponseDto> checkAvailability(@PathVariable UUID id,
-                                                                       @RequestParam @Min(1) Integer quantity) {
+    public ResponseEntity<AvailabilityResponseDto> checkAvailability(@PathVariable @NotBlank UUID id,
+                                                                       @RequestParam @NotNull @Min(1) Integer quantity) {
         return ResponseEntity.ok(productService.checkAvailability(id, quantity));
     }
 
