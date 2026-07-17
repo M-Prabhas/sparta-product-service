@@ -1,0 +1,397 @@
+openapi: 3.0.3
+info:
+  title: Product Service API
+  description: REST API for managing product catalog, pricing, and stock
+  version: v1
+servers:
+  - url: /
+tags:
+  - name: Products
+    description: Operations for managing the product catalog, pricing, and stock
+paths:
+  /api/v1/products:
+    post:
+      tags: [Products]
+      summary: Create a product
+      description: Creates a new product in the catalog
+      operationId: createProduct
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductRequestDto'
+      responses:
+        '201':
+          description: Product created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductResponseDto'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDto'
+        '409':
+          description: A product with the same name already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDto'
+    get:
+      tags: [Products]
+      summary: List all products
+      description: Retrieves every product in the catalog
+      operationId: getAllProducts
+      responses:
+        '200':
+          description: Products retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProductResponseDto'
+
+  /api/v1/products/{id}:
+    get:
+      tags: [Products]
+      summary: Get a product by ID
+      description: Retrieves a single product by its identifier
+      operationId: getProductById
+      parameters:
+        - $ref: '#/components/parameters/ProductId'
+      responses:
+        '200':
+          description: Product found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductResponseDto'
+        '404':
+          description: Product not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDto'
+    put:
+      tags: [Products]
+      summary: Update a product
+      description: Replaces the details of an existing product
+      operationId: updateProduct
+      parameters:
+        - $ref: '#/components/parameters/ProductId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductRequestDto'
+      responses:
+        '200':
+          description: Product updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductResponseDto'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDto'
+        '404':
+          description: Product not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDto'
+    delete:
+      tags: [Products]
+      summary: Delete a product
+      description: Permanently removes a product from the catalog
+      operationId: deleteProduct
+      parameters:
+        - $ref: '#/components/parameters/ProductId'
+      responses:
+        '204':
+          description: Product deleted
+        '404':
+          description: Product not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDto'
+
+  /api/v1/products/{id}/price:
+    patch:
+      tags: [Products]
+      summary: Update a product's price
+      description: Sets a new price for the given product
+      operationId: updatePrice
+      parameters:
+        - $ref: '#/components/parameters/ProductId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PriceUpdateRequestDto'
+      responses:
+        '200':
+          description: Price updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductResponseDto'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDto'
+        '404':
+          description: Product not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDto'
+
+  /api/v1/products/{id}/stock:
+    patch:
+      tags: [Products]
+      summary: Update a product's stock
+      description: Increases, decreases, or sets the stock quantity for a product
+      operationId: updateStock
+      parameters:
+        - $ref: '#/components/parameters/ProductId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StockUpdateRequestDto'
+      responses:
+        '200':
+          description: Stock updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductResponseDto'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDto'
+        '404':
+          description: Product not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDto'
+        '409':
+          description: Stock update would result in insufficient stock
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDto'
+
+  /api/v1/products/{id}/availability:
+    get:
+      tags: [Products]
+      summary: Check product availability
+      description: Checks whether the requested quantity of a product is currently available
+      operationId: checkAvailability
+      parameters:
+        - $ref: '#/components/parameters/ProductId'
+        - name: quantity
+          in: query
+          description: Quantity to check availability for
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        '200':
+          description: Availability checked
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AvailabilityResponseDto'
+        '400':
+          description: Invalid quantity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDto'
+        '404':
+          description: Product not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDto'
+
+  /api/v1/products/{id}/reduce-stock:
+    patch:
+      tags: [Products]
+      summary: Reduce stock for an order
+      description: Reduces stock for a product as part of fulfilling an order
+      operationId: reduceStock
+      parameters:
+        - $ref: '#/components/parameters/ProductId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StockReductionRequestDto'
+      responses:
+        '200':
+          description: Stock reduced
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductResponseDto'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDto'
+        '404':
+          description: Product not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDto'
+        '409':
+          description: Insufficient stock to fulfill the request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDto'
+
+components:
+  parameters:
+    ProductId:
+      name: id
+      in: path
+      description: Product identifier
+      required: true
+      schema:
+        type: string
+        format: uuid
+  schemas:
+    ProductRequestDto:
+      type: object
+      required:
+        - productName
+        - category
+        - price
+        - stockQuantity
+      properties:
+        productName:
+          type: string
+          maxLength: 150
+        description:
+          type: string
+          maxLength: 1000
+        category:
+          type: string
+          maxLength: 100
+        price:
+          type: number
+          format: double
+          minimum: 0
+        stockQuantity:
+          type: integer
+          minimum: 0
+    ProductResponseDto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        productName:
+          type: string
+        description:
+          type: string
+        category:
+          type: string
+        price:
+          type: number
+          format: double
+        stockQuantity:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    PriceUpdateRequestDto:
+      type: object
+      required:
+        - price
+      properties:
+        price:
+          type: number
+          format: double
+          minimum: 0
+    StockUpdateRequestDto:
+      type: object
+      required:
+        - quantity
+        - operation
+      properties:
+        quantity:
+          type: integer
+          minimum: 1
+        operation:
+          $ref: '#/components/schemas/StockOperation'
+    StockOperation:
+      type: string
+      enum:
+        - INCREASE
+        - DECREASE
+        - SET
+    StockReductionRequestDto:
+      type: object
+      required:
+        - quantity
+        - orderReference
+      properties:
+        quantity:
+          type: integer
+          minimum: 1
+        orderReference:
+          type: string
+    AvailabilityResponseDto:
+      type: object
+      properties:
+        productId:
+          type: string
+          format: uuid
+        requestedQuantity:
+          type: integer
+        available:
+          type: boolean
+        currentStock:
+          type: integer
+    ErrorResponseDto:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        status:
+          type: integer
+        error:
+          type: string
+        message:
+          type: string
+        path:
+          type: string
