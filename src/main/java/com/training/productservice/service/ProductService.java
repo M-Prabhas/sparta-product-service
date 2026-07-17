@@ -6,7 +6,6 @@ import com.training.productservice.dto.ProductRequestDto;
 import com.training.productservice.dto.ProductResponseDto;
 import com.training.productservice.dto.StockUpdateRequestDto;
 import com.training.productservice.entity.Product;
-import jakarta.validation.constraints.Min;
 
 import java.util.List;
 import java.util.UUID;
@@ -17,9 +16,7 @@ public interface ProductService {
 
     List<ProductResponseDto> getAllProducts();
 
-    public ProductResponseDto getProductById(UUID id);
-
-    //ProductResponseDto updateProduct(UUID id, ProductRequestDto dto);
+    ProductResponseDto getProductById(UUID id);
 
     ProductResponseDto updatePrice(UUID id, PriceUpdateRequestDto dto);
 
@@ -33,5 +30,5 @@ public interface ProductService {
 
     ProductResponseDto updateProductInfo(UUID id, ProductRequestDto product);
 
-    ProductResponseDto adjustStock(UUID id, @Min(1) StockUpdateRequestDto stockUpdateRequestDto);
+    ProductResponseDto adjustStock(UUID id, StockUpdateRequestDto stockUpdateRequestDto);
 }

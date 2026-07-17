@@ -6,8 +6,15 @@ import com.training.productservice.dto.ProductRequestDto;
 import com.training.productservice.dto.ProductResponseDto;
 import com.training.productservice.dto.StockReductionRequestDto;
 import com.training.productservice.dto.StockUpdateRequestDto;
-import com.training.productservice.entity.Product;
+import com.training.productservice.dto.ErrorResponseDto;
 import com.training.productservice.service.ProductService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -58,11 +65,11 @@ public class  ProductController {
         return ResponseEntity.ok(productService.getProductById(id));
     }
 
-//    @PutMapping("/{id}")
-//    public ResponseEntity<ProductResponseDto> updateProduct(@PathVariable UUID id,
-//                                                              @Valid @RequestBody ProductRequestDto dto) {
-//        return ResponseEntity.ok(productService.updateProduct(id, dto));
-//    }
+    @PutMapping("/{id}")
+    public ResponseEntity<ProductResponseDto> updateProduct(@PathVariable UUID id,
+                                                              @Valid @RequestBody ProductRequestDto dto) {
+        return ResponseEntity.ok(productService.updateProduct(id, dto));
+    }
 
     @PatchMapping("/{id}/price")
     public ResponseEntity<ProductResponseDto> updatePrice(@PathVariable UUID id,
