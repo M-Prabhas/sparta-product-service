@@ -1,5 +1,6 @@
 package com.training.productservice.dto;
 
+import com.training.productservice.enums.StockOperation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;

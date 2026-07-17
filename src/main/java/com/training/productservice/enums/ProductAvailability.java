@@ -1,4 +1,4 @@
-package com.training.productservice.dto;
+package com.training.productservice.enums;
 
 public enum ProductAvailability {
     AVAILABLE,

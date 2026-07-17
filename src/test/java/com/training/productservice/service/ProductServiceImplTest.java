@@ -1,8 +1,9 @@
 package com.training.productservice.service;
 
 import com.training.productservice.dto.AvailabilityResponseDto;
-import com.training.productservice.dto.ProductAvailability;
+import com.training.productservice.enums.ProductAvailability;
 import com.training.productservice.entity.Product;
+import com.training.productservice.enums.ProductStatus;
 import com.training.productservice.exception.InsufficientStockException;
 import com.training.productservice.exception.ProductNotFoundException;
 import com.training.productservice.repository.ProductRepository;
@@ -42,7 +43,7 @@ class ProductServiceImplTest {
                 .category("Electronics")
                 .price(BigDecimal.valueOf(99.99))
                 .stockQuantity(stock)
-                .active(true)
+                .status(ProductStatus.ACTIVE)
                 .build();
     }
 
