@@ -3,6 +3,7 @@ package com.training.productservice.util;
 import com.training.productservice.dto.ProductRequestDto;
 import com.training.productservice.dto.ProductResponseDto;
 import com.training.productservice.entity.Product;
+import com.training.productservice.enums.ProductStatus;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -15,7 +16,7 @@ public class ProductMapper {
                 .category(dto.getCategory())
                 .price(dto.getPrice())
                 .stockQuantity(dto.getStockQuantity())
-                .active(true)
+                .status(ProductStatus.ACTIVE)
                 .build();
     }
 
