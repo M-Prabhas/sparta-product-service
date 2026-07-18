@@ -1,11 +1,13 @@
 package com.training.productservice.service;
 
+import com.training.productservice.client.OrderServiceClient;
 import com.training.productservice.dto.*;
 import com.training.productservice.entity.Product;
 import com.training.productservice.enums.ProductAvailability;
 import com.training.productservice.enums.ProductStatus;
 import com.training.productservice.exception.DuplicateProductException;
 import com.training.productservice.exception.InsufficientStockException;
+import com.training.productservice.exception.ProductHasOpenOrdersException;
 import com.training.productservice.exception.ProductNotFoundException;
 import com.training.productservice.repository.ProductRepository;
 import com.training.productservice.util.ProductMapper;
@@ -24,6 +26,7 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
+    private final OrderServiceClient orderServiceClient;
 
     @Override
     @Transactional
@@ -110,6 +113,10 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public String deleteProduct(UUID id) {
         Product product = findProductOrThrow(id);
+        if (orderServiceClient.hasOpenOrders(id)) {
+            throw new ProductHasOpenOrdersException(
+                    "Product " + id + " cannot be deleted: it is referenced by one or more open orders");
+        }
         product.setStatus(ProductStatus.DISCONTINUED);
         productRepository.save(product);
 

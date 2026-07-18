@@ -38,6 +38,16 @@ public class GlobalExceptionHandler {
         return buildResponse(HttpStatus.CONFLICT, "The product was modified concurrently; please retry.", request);
     }
 
+    @ExceptionHandler(ProductHasOpenOrdersException.class)
+    public ResponseEntity<ErrorResponseDto> handleProductHasOpenOrders(ProductHasOpenOrdersException ex, HttpServletRequest request) {
+        return buildResponse(HttpStatus.CONFLICT, ex.getMessage(), request);
+    }
+
+    @ExceptionHandler(OrderServiceUnavailableException.class)
+    public ResponseEntity<ErrorResponseDto> handleOrderServiceUnavailable(OrderServiceUnavailableException ex, HttpServletRequest request) {
+        return buildResponse(HttpStatus.SERVICE_UNAVAILABLE, ex.getMessage(), request);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponseDto> handleValidationException(MethodArgumentNotValidException ex, HttpServletRequest request) {
         String message = ex.getBindingResult().getFieldErrors().stream()
