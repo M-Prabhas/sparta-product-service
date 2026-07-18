@@ -3,6 +3,7 @@ package com.training.productservice.util;
 import com.training.productservice.dto.ProductRequestDto;
 import com.training.productservice.dto.ProductResponseDto;
 import com.training.productservice.entity.Product;
+import com.training.productservice.enums.ProductStatus;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -15,16 +16,8 @@ public class ProductMapper {
                 .category(dto.getCategory())
                 .price(dto.getPrice())
                 .stockQuantity(dto.getStockQuantity())
-                .active(true)
+                .status(ProductStatus.ACTIVE)
                 .build();
-    }
-
-    public void updateEntity(Product product, ProductRequestDto dto) {
-        product.setProductName(dto.getProductName());
-        product.setDescription(dto.getDescription());
-        product.setCategory(dto.getCategory());
-        product.setPrice(dto.getPrice());
-        product.setStockQuantity(dto.getStockQuantity());
     }
 
     public ProductResponseDto toResponseDto(Product product) {
@@ -39,4 +32,14 @@ public class ProductMapper {
                 .updatedAt(product.getUpdatedAt())
                 .build();
     }
+
+    public void updateEntity(Product product, ProductRequestDto dto) {
+        product.setProductName(dto.getProductName());
+        product.setDescription(dto.getDescription());
+        product.setCategory(dto.getCategory());
+        product.setPrice(dto.getPrice());
+        product.setStockQuantity(dto.getStockQuantity());
+    }
+
+
 }

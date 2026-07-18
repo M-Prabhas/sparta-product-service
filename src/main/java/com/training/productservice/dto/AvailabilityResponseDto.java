@@ -1,10 +1,7 @@
 package com.training.productservice.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.training.productservice.enums.ProductAvailability;
+import lombok.*;
 
 import java.util.UUID;
 
@@ -17,6 +14,6 @@ public class AvailabilityResponseDto {
 
     private UUID productId;
     private Integer requestedQuantity;
-    private Boolean available;
+    private ProductAvailability available;
     private Integer currentStock;
 }
